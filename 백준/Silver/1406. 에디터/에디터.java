@@ -1,70 +1,73 @@
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.util.Stack;
+import java.io.*;
+import java.util.*;
 
 public class Main {
+    /*
+    커서가 문장 맨 앞쪽에 위치하는 경우를 위해서 -1 인덱스가 있다고 가정한다.
+    커서 왼쪽 문자를 지운다면(B)
+    1. 해당 위치의 문자를 지운다. a b c
+    2. 커서의 위치를 -1(list 전체 사이즈도 -1 됐으므로)
+    커서 왼쪽에 문자를 추가한다면(P)
+    1. 커서를 1 증가시킨다.
+    2. 해당 커서 위치에 문자를 추가한다.
 
-	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-		
-		String str = br.readLine();
-		int M = Integer.parseInt(br.readLine());
+    time O(N+(N+M)^2) -> 시간 초과
+    -> LinkedList에서 삽입, 삭제는 해당 위치의 주소를 알고 있을 경우에만 O(1)이고
+    index를 이용한 삽입, 삭제는 해당 주소까지 찾아가야 하므로 O(N)이다. ListIterator을 이용하면 list의 주소를 이용할 수 있다.
 
-		Stack<String> leftSt = new Stack<String>();
-		Stack<String> rightSt = new Stack<String>();
-        
-		//처음 커서는 문장의 맨 뒤에서 시작하기 때문에 왼쪽 스택에 초기 문자를 모두 넣어줌 (ex. abc|)
-		String[] arr = str.split("");
-		for(String s : arr) { //Enhanced For Loop 사용 
-			leftSt.push(s); 
-		}
-		
-		for(int i = 0; i < M; i++) {
-			String command = br.readLine();
-			char c = command.charAt(0);
-			//StringTokenizer st = new StringTokenizer(reader.readLine());
-			//String c = st.nextToken();
-			
-			switch(c) {
-			case 'L':
-				if(!leftSt.isEmpty())
-					rightSt.push(leftSt.pop());
+    time O(N+M)
+     */
+    public static void main(String[] args) throws IOException {
+        // write your code here
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        List<Character> list = new LinkedList<>();
 
-				break;
-			case 'D':
-				if(!rightSt.isEmpty())
-					leftSt.push(rightSt.pop());
+        String str = br.readLine(); // 맨 처음 문자열
 
-				break;
-			case 'B':
-				if(!leftSt.isEmpty()) {
-					leftSt.pop();
-				}
-				break;
-			case 'P':
-				char t = command.charAt(2);
-				leftSt.push(String.valueOf(t));
-				//leftSt.push(st.nextToken());
+        for (int i = 0; i < str.length(); i++) { // O(N)
+            list.add(str.charAt(i));
+        }
 
-				break;
-			default:
-				break;
-			}
-		}
-        
-		//Stack은 LIFO 구조이기 때문에
-		//왼쪽 스택에 있는 데이터들을 모두 오른쪽으로 옮긴 뒤에 오른쪽에 있는 모든 내용을 출력한다.
-		while(!leftSt.isEmpty())
-			rightSt.push(leftSt.pop());
-		
-		while(!rightSt.isEmpty())
-			bw.write(rightSt.pop());
-		
-		bw.flush();
-		bw.close(); 
-	}
+        ListIterator<Character> iter = list.listIterator();
+
+        while (iter.hasNext()) {
+            iter.next();
+        }
+
+        int inst = Integer.parseInt(br.readLine()); // 명령어의 갯수
+        for (int i = 0; i < inst; i++) { // O(M)
+            String subStr = br.readLine();
+            char ch = subStr.charAt(0);
+
+            switch (ch) {
+                case 'L':
+                    if (iter.hasPrevious()) {
+                        iter.previous();
+                    }
+                    break;
+                case 'B':
+                    if (iter.hasPrevious()) {
+                        iter.previous();
+                        iter.remove();
+                    }
+                    break;
+                case 'D':
+                    if (iter.hasNext()) {
+                        iter.next();
+                    }
+                    break;
+                case 'P':
+                    iter.add(subStr.charAt(2));
+                    break;
+            }
+        }
+
+        StringBuilder sb = new StringBuilder();
+
+        for (Character ch : list) {
+            sb.append(ch);
+        }
+
+        System.out.println(sb.toString());
+    }
 }
