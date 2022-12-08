@@ -4,16 +4,18 @@ import java.util.*;
 public class Main {
     /*
     2초, 256MB
-    1. 조합을 통해 25에서 7을 뽑는다.
-    2. 뽑은 조합을 bfs를 통해 가로세로 인접 여부를 체크한다.
-    3. 이다솜파의 숫자가 4명 이상인지 같이 확인한다.
+
+    1. 전체 맵에서 7명의 위치를 조합을 이용해 선택한다.
+        0~24 중 7개 뽑기
+    2. 선택한 위치가 상하좌우로 인접해 있는지 BFS를 이용해 확인한다.
+    3. BFS를 진행하면서 7명 중 이다솜파가 4명 이상인지도 확인한다.
      */
     static char[][] map = new char[5][5];
-    static int[] combX = new int[25];
-    static int[] combY = new int[25];
-    static int[] dx = {0, 0, -1, 1};
-    static int[] dy = {-1, 1, 0, 0};
-    static int ans;
+    static int[] tmpX = new int[25];
+    static int[] tmpY = new int[25];
+    static int[] dx = {-1, 1, 0, 0};
+    static int[] dy = {0, 0, -1, 1};
+    static int cnt = 0;
 
     public static void main(String[] args) throws Exception {
         // write your code here
@@ -26,62 +28,78 @@ public class Main {
         }
 
         for (int i = 0; i < 25; i++) {
-            combY[i] = i / 5;
-            combX[i] = i % 5;
+            tmpX[i] = i % 5;
+            tmpY[i] = i / 5;
         }
 
-        comb(new int[7], 0, 0, 7);
-        System.out.println(ans);
+        comb(new int[7], new boolean[25], 0, 25, 7);
+        System.out.println(cnt);
     }
 
-    public static void comb(int[] comb, int idx, int depth, int left) { // 재귀를 이용한 조합
-        if (left == 0) {
-            bfs(comb);
+    // 조합
+    public static void comb(int[] arr, boolean[] vis, int start, int n, int r) {
+        if (r == 0) {
+            int idx = 0;
+            for (int i = 0; i < n; i++) {
+                if (vis[i]) {
+                    arr[idx++] = i;
+                }
+            }
+            bfs(arr);
             return;
         }
 
-        if (depth == 25) {
-            return;
+        for (int i = start; i < n; i++) {
+            vis[i] = true;
+            comb(arr, vis, i + 1, n, r - 1);
+            vis[i] = false;
         }
-
-        comb[idx] = depth;
-        comb(comb, idx + 1, depth + 1, left - 1); // 선택
-        comb(comb, idx, depth + 1, left); // 선택 X, 배열에 들어갈 숫자만 증가시킴
     }
 
-    public static void bfs(int[] comb) {
-        Queue<Integer> q = new LinkedList<>();
-        boolean[] visited = new boolean[7];
+    // bfs
+    public static void bfs(int[] arr) {
+        Queue<int[]> q = new LinkedList<>();
+        boolean[][] isP7 = new boolean[5][5]; // 칠공주 위치 배열
+        boolean[][] vis = new boolean[5][5];
+        int connect = 1; // 현재 연결된 자리 갯수
         int lds = 0; // 이다솜파 인원수
-        int adj = 1; // 인접한 인원의 수
 
-        visited[0] = true;
-        q.offer(comb[0]);
+        for (int i = 0; i < 7; i++) { // 칠공주 위치 표시
+            int tmp = arr[i];
+
+            isP7[tmpY[tmp]][tmpX[tmp]] = true;
+        }
+        int tmp = arr[0];
+        vis[tmpY[tmp]][tmpX[tmp]] = true;
+        q.offer(new int[]{tmpY[tmp], tmpX[tmp]});
 
         while (!q.isEmpty()) {
-            int cur = q.poll();
-            int curX = combX[cur];
-            int curY = combY[cur];
+            int[] cur = q.poll();
 
-            if (map[curY][curX] == 'S') {
+            if (map[cur[0]][cur[1]] == 'S') { // 현재 자리가 이다솜파
                 lds++;
             }
 
             for (int i = 0; i < 4; i++) {
-                int nx = curX + dx[i];
-                int ny = curY + dy[i];
-                for (int j = 0; j < 7; j++) {
-                    if (!visited[j] && nx == combX[comb[j]] && ny == combY[comb[j]]) {
-                        visited[j] = true;
-                        q.offer(comb[j]);
-                        adj++;
-                    }
+                int nx = cur[0] + dx[i];
+                int ny = cur[1] + dy[i];
+
+                if (nx < 0 || nx >= 5 || ny < 0 || ny >= 5) {
+                    continue;
                 }
+
+                if (vis[nx][ny] || !isP7[nx][ny]) {
+                    continue;
+                }
+
+                q.offer(new int[]{nx, ny});
+                vis[nx][ny] = true;
+                connect++;
             }
         }
 
-        if (adj == 7 && lds >= 4) {
-            ans++;
+        if (connect == 7 && lds >= 4) {
+            cnt++;
         }
     }
 }
