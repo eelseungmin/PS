@@ -1,46 +1,40 @@
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
 
 public class Main {
-    /*
-    1초, 512MB
-
-    백트래킹
-    */
+    static int[] arr = new int[9];
+    static boolean[] isUsed = new boolean[9];
     static int n, m;
-    static int[] arr;
-    static boolean[] isUsed;
-    static StringBuilder sb;
+    static StringBuilder sb = new StringBuilder();
 
     public static void main(String[] args) throws Exception {
-	// write your code here
+        // write your code here
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
 
         n = Integer.parseInt(st.nextToken());
         m = Integer.parseInt(st.nextToken());
-        arr = new int[m + 1];
-        isUsed = new boolean[n + 1];
 
-        func(0);
+        func(1);
+
+        System.out.println(sb);
     }
 
-    public static void func(int num) { // 현재까지 고른 숫자의 갯수 num
-        if (num == m) {
-            sb = new StringBuilder();
-            for (int i = 0; i < m; i++) {
-                sb.append(arr[i] + " ");
+    public static void func(int k) { // k번째 수를 선택
+        if (k == m + 1) {
+            for (int i = 1; i < m + 1; i++) {
+                sb.append(arr[i]).append(" ");
             }
             sb.append("\n");
-            System.out.print(sb);
             return;
         }
 
-        for (int i = 1; i <= n; i++) {
+        for (int i = 1; i < n + 1; i++) {
             if (!isUsed[i]) {
-                arr[num] = i;
+                arr[k] = i;
                 isUsed[i] = true;
-                func(num + 1);
+                func(k + 1);
                 isUsed[i] = false;
             }
         }
