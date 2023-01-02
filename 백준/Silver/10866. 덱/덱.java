@@ -1,73 +1,73 @@
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.ArrayDeque;
+import java.util.StringTokenizer;
 
 public class Main {
-    /*
-
-     */
     public static void main(String[] args) throws Exception {
         // write your code here
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+        ArrayDeque<Integer> dq = new ArrayDeque<>();
+        StringBuilder sb = new StringBuilder();
 
         int n = Integer.parseInt(br.readLine());
-        Deque<Integer> deque = new ArrayDeque<>();
-        StringBuilder sb = new StringBuilder();
 
         for (int i = 0; i < n; i++) {
             StringTokenizer st = new StringTokenizer(br.readLine());
 
             switch (st.nextToken()) {
                 case "push_front":
-                    deque.offerFirst(Integer.parseInt(st.nextToken()));
+                    dq.offerFirst(Integer.parseInt(st.nextToken()));
                     break;
                 case "push_back":
-                    deque.offerLast(Integer.parseInt(st.nextToken()));
+                    dq.offerLast(Integer.parseInt(st.nextToken()));
                     break;
                 case "pop_front":
-                    if (deque.isEmpty()) {
-                        sb.append(-1 + "\n");
+                    if (!dq.isEmpty()) {
+                        sb.append(dq.removeFirst());
                     } else {
-                        sb.append(deque.pollFirst() + "\n");
+                        sb.append(-1);
                     }
+                    sb.append("\n");
                     break;
                 case "pop_back":
-                    if (deque.isEmpty()) {
-                        sb.append(-1 + "\n");
+                    if (!dq.isEmpty()) {
+                        sb.append(dq.removeLast());
                     } else {
-                        sb.append(deque.pollLast() + "\n");
+                        sb.append(-1);
                     }
+                    sb.append("\n");
                     break;
                 case "size":
-                    sb.append(deque.size() + "\n");
+                    sb.append(dq.size() + "\n");
                     break;
                 case "empty":
-                    if (deque.isEmpty()) {
-                        sb.append(1 + "\n");
+                    if (!dq.isEmpty()) {
+                        sb.append(0);
                     } else {
-                        sb.append(0 + "\n");
+                        sb.append(1);
                     }
+                    sb.append("\n");
                     break;
                 case "front":
-                    if (deque.isEmpty()) {
-                        sb.append(-1 + "\n");
+                    if (!dq.isEmpty()) {
+                        sb.append(dq.getFirst());
                     } else {
-                        sb.append(deque.peekFirst() + "\n");
+                        sb.append(-1);
                     }
+                    sb.append("\n");
                     break;
                 case "back":
-                    if (deque.isEmpty()) {
-                        sb.append(-1 + "\n");
+                    if (!dq.isEmpty()) {
+                        sb.append(dq.getLast());
                     } else {
-                        sb.append(deque.peekLast() + "\n");
+                        sb.append(-1);
                     }
+                    sb.append("\n");
                     break;
             }
         }
 
-        bw.write(sb.toString());
-        bw.flush();
-        bw.close();
-        br.close();
+        System.out.println(sb);
     }
 }
