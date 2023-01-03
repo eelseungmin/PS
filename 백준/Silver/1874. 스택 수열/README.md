@@ -1,10 +1,10 @@
-# [Silver II] 스택 수열 - 1874 
+# [Silver III] 스택 수열 - 1874 
 
 [문제 링크](https://www.acmicpc.net/problem/1874) 
 
 ### 성능 요약
 
-메모리: 48900 KB, 시간: 1504 ms
+메모리: 27212 KB, 시간: 344 ms
 
 ### 분류
 
