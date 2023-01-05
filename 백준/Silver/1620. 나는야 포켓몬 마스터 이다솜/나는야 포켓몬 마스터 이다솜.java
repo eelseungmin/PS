@@ -1,7 +1,6 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.StringTokenizer;
 
@@ -16,17 +15,17 @@ public class Main {
         int n = Integer.parseInt(st.nextToken());
         int m = Integer.parseInt(st.nextToken());
         HashMap<String, Integer> map = new HashMap<>();
-        ArrayList<String> arr = new ArrayList<>();
+        String[] arr = new String[100001];
         StringBuilder sb = new StringBuilder();
 
         for (int i = 1; i <= n; i++) {
-            arr.add(br.readLine());
-            map.put(arr.get(i - 1), i);
+            arr[i] = br.readLine();
+            map.put(arr[i], i);
         }
         for (int i = 0; i < m; i++) {
             String tmp = br.readLine();
             if (Character.isDigit(tmp.charAt(0))) {
-                sb.append(arr.get(Integer.parseInt(tmp) - 1)).append('\n');
+                sb.append(arr[Integer.parseInt(tmp)]).append('\n');
             } else {
                 sb.append(map.get(tmp)).append('\n');
             }
