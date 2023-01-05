@@ -1,68 +1,66 @@
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Stack;
 
 public class Main {
     /*
-    1초, 128
-    괄호 내부의 값 tmp
-    전체 값 res
+    (()[[]]) ([])
+    2(2+3(3))+2(3)
+    2*2 + 2*3(3) + 2(3)
      */
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws IOException {
         // write your code here
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-//        StringBuilder sb = new StringBuilder();
+        String input = br.readLine();
+        int ans = 0; // 전체 계산 결과
+        int tmp = 1;
+        Stack<Character> par = new Stack<>();
+        boolean isValid = true; // 문자열 유효 여부
 
-        String str = br.readLine();
-        Stack<Character> stack = new Stack<>();
-        boolean isValid = true;
-        int tmp = 1; // 더하기 변수
-        int res = 0; // 곱하기 변수
-
-        for (int i = 0; i < str.length(); i++) {
-            if (!isValid) { // 틀린 괄호열이면 반복문 바로 탈출
+        for (int i = 0; i < input.length(); i++) {
+            if (!isValid) {
                 break;
             }
-            char ch = str.charAt(i);
+            char cur = input.charAt(i);
 
-            switch (ch) {
+            switch (cur) {
                 case '(':
-                    stack.push(ch);
+                    par.push(cur);
                     tmp *= 2;
-
                     break;
                 case '[':
-                    stack.push(ch);
+                    par.push(cur);
                     tmp *= 3;
-
                     break;
                 case ')':
-                    if (stack.isEmpty()) {
+                    if (par.isEmpty()) {
                         isValid = false;
                         break;
                     }
 
-                    if (str.charAt(i - 1) == '(') {
-                        res += tmp;
+                    if (input.charAt(i - 1) == '(') {
+                        ans += tmp;
                     }
                     tmp /= 2;
 
-                    if (stack.pop() != '(') {
+                    if (par.pop() != '(') {
                         isValid = false;
                     }
 
                     break;
                 case ']':
-                    if (stack.isEmpty()) {
+                    if (par.isEmpty()) {
                         isValid = false;
                         break;
                     }
 
-                    if (str.charAt(i - 1) == '[') {
-                        res += tmp;
+                    if (input.charAt(i - 1) == '[') {
+                        ans += tmp;
                     }
                     tmp /= 3;
 
-                    if (stack.pop() != '[') {
+                    if (par.pop() != '[') {
                         isValid = false;
                     }
 
@@ -70,13 +68,10 @@ public class Main {
             }
         }
 
-        if (!stack.isEmpty()) {
-            isValid = false;
-        }
-        if (!isValid) {
+        if (!isValid || !par.isEmpty()) {
             System.out.println(0);
         } else {
-            System.out.println(res);
+            System.out.println(ans);
         }
     }
 }
