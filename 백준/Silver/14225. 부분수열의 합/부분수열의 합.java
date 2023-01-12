@@ -10,7 +10,6 @@ public class Main {
      */
     static int n;
     static int[] nums = new int[20];
-    static boolean[] selected = new boolean[20];
     static HashSet<Integer> set = new HashSet<>();
 
     public static void main(String[] args) throws IOException {
@@ -21,7 +20,7 @@ public class Main {
             nums[i] = Integer.parseInt(st.nextToken());
         }
 
-        func(0);
+        func(0, 0);
 
         for (int i = 1; i <= Integer.MAX_VALUE; i++) {
             if (!set.contains(i)) {
@@ -31,22 +30,15 @@ public class Main {
         }
     }
 
-    static void func(int cnt) {
+    static void func(int cnt, int sum) {
         if (cnt == n) {
-            int sum = 0;
-            for (int i = 0; i < selected.length; i++) {
-                if (selected[i]) {
-                    sum += nums[i];
-                }
+            if (sum != 0) {
+                set.add(sum);
             }
-            set.add(sum);
             return;
         }
 
-        selected[cnt] = true;
-        func(cnt + 1);
-
-        selected[cnt] = false;
-        func(cnt + 1);
+        func(cnt + 1, sum + nums[cnt]);
+        func(cnt + 1, sum);
     }
 }
