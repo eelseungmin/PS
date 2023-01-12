@@ -43,7 +43,6 @@ public class Main {
             return;
         }
 
-
         selected[cnt] = true;
         func(cnt + 1);
 
