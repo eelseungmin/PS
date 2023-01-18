@@ -21,18 +21,6 @@
 
 - hashmap에서 value로 배열을 넣고 싶다면 map.put(key, {1,2}) 이렇게 작성하는 게 아니라 map.put(key, new int[]{1,2}) 이렇게 작성해야 한다. 또는 넣을 배열을 미리 만들어서 배열명을 넣는 방법을 써도 괜찮다.
 
-- 향상된 for문(for each문)
-  - 내부에서 Iterator 인터페이스를 사용한다. Iterator는 cursor라는 변수를 통해 자신이 순환하고 있는 위치를 기억할 수 있기 때문에 매번 처음부터 순환할 필요가 없다. 따라서 linkedlist의 경우 아래의 코드를 그 다음 코드로 바꾸기만 해도 list 내부의 값을 가져오는 걸 O(N)에서 O(1)로 줄일 수 있다.
-```
-for (int i = 0; i < list.size(); i++) {
-    sb.append(list.get(i));
-}
-
-for (Character ch : list) {
-    sb.append(ch);
-}
-```  
-
 - Deque를 구현할 때 LinkedList와 ArrayDeque의 차이(https://stackoverflow.com/questions/6163166/why-is-arraydeque-better-than-linkedlist)
 1. The ArrayDeque class is the resizable array implementation of the Deque interface and LinkedList class is the list implementation
 2. NULL elements can be added to LinkedList but not in ArrayDeque
