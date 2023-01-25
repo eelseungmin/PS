@@ -1,44 +1,44 @@
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
 
 public class Main {
     /*
 
      */
-    static int[] arr = new int[20];
-    static int[] tmp = new int[20];
-    static int n, s, cnt;
-    static boolean[] isUsed = new boolean[20];
+    static int n, s;
+    static int[] seq;
+    static int ans;
 
-    public static void main(String[] args) throws Exception {
-	// write your code here
+    public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
-
         n = Integer.parseInt(st.nextToken());
         s = Integer.parseInt(st.nextToken());
+        seq = new int[n];
         st = new StringTokenizer(br.readLine());
         for (int i = 0; i < n; i++) {
-            arr[i] = Integer.parseInt(st.nextToken());
+            seq[i] = Integer.parseInt(st.nextToken());
         }
 
-        func(0, 0);
-        if (s == 0) { // 크기가 양수인 부분수열 중에서 합이 S가 되는 경우이므로 공집합은 제외
-            cnt--;
+        makeSum(0, 0);
+        if (s == 0) {
+            ans--;
         }
 
-        System.out.println(cnt);
+        System.out.println(ans);
     }
 
-    public static void func(int num, int sum) { // num번째 수를 더할지 말지 결정하고 num+1번째 수를 정하러 들어가는 재귀함수
-        if (num == n) {
+    static void makeSum(int cnt, int sum) {
+        if (cnt == n) {
             if (sum == s) {
-                cnt++;
+                ans++;
             }
             return;
         }
 
-        func(num + 1, sum);
-        func(num + 1, sum + arr[num]);
+        makeSum(cnt + 1, sum);
+        makeSum(cnt + 1, sum + seq[cnt]);
     }
 }
