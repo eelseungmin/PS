@@ -1,48 +1,52 @@
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 public class Main {
     /*
-    10초, 128MB
+    어떤 행에 퀸을 놓은 뒤 해당 좌표에서 |, \, / 방향 확인
+    해당 위치에 다른 퀸이 존재하면 가지치기
 
-    */
-    static int n, cnt;
-    static int[][] map;
+    \: 0,5 1,4 x-y
+    /: 0,0 1,1 x+y
+     */
+    static int n;
     static boolean[] isUsed1, isUsed2, isUsed3;
+    static int cnt;
 
-    public static void main(String[] args) throws Exception {
-	// write your code here
+    public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         n = Integer.parseInt(br.readLine());
-        isUsed1 = new boolean[30]; // 열에 퀸이 존재하는지 확인하는 배열
-        isUsed2 = new boolean[30]; // \에 퀸이 존재하는지 확인하는 배열
-        isUsed3 = new boolean[30]; // /에 퀸이 존재하는지 확인하는 배열
+        isUsed1 = new boolean[2 * n]; // |
+        isUsed2 = new boolean[2 * n]; // /
+        isUsed3 = new boolean[2 * n]; // \
 
         func(0);
 
         System.out.println(cnt);
     }
 
-    public static void func(int cur) { // cur번째 행에 퀸을 배치하는 함수
-        if (cur == n) { // 배치가 완료되었으므로 cnt 증가
+    private static void func(int row) { // 해당 row에 배치
+        if (row == n) {
             cnt++;
+
             return;
         }
 
-        for (int i = 0; i < n; i++) {
-            if (isUsed1[i] || isUsed2[cur+i] || isUsed3[cur-i+n-1]) { // 각 일직선상에 퀸이 존재할 경우, n-1을 더하는 이유는 인덱스가 음수가 되지 않게 하기 위해서
+        for (int col = 0; col < n; col++) { // row, col마다 배치
+            if (isUsed1[col] || isUsed2[row + col] || isUsed3[row - col + n - 1]) {
                 continue;
             }
 
-            isUsed1[i] = true;
-            isUsed2[cur+i] = true;
-            isUsed3[cur-i+n-1] = true;
+            isUsed1[col] = true;
+            isUsed2[row + col] = true;
+            isUsed3[row - col + n - 1] = true;
 
-            func(cur + 1);
+            func(row + 1);
 
-            isUsed1[i] = false;
-            isUsed2[cur+i] = false;
-            isUsed3[cur-i+n-1] = false;
+            isUsed1[col] = false;
+            isUsed2[row + col] = false;
+            isUsed3[row - col + n - 1] = false;
         }
     }
 }
