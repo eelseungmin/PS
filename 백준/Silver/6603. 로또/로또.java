@@ -1,59 +1,65 @@
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
 
 public class Main {
     /*
-    1초, 128MB
+    중복 없이 순서와 무관하게 k개 중 6개를 고르기
      */
-    static int k;
     static int[] arr;
-    static int[] set;
-    static boolean[] isUsed = new boolean[50];
-    static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+    static int[] seq;
+    static boolean[] isUsed;
+    static StringBuilder sb;
+    static int k;
 
-    public static void main(String[] args) throws Exception {
-	// write your code here
+    public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        sb = new StringBuilder();
+
         while (true) {
             StringTokenizer st = new StringTokenizer(br.readLine());
             k = Integer.parseInt(st.nextToken());
-            if (k == 0) {
+
+            if (k == 0) { // 0이면 입력 종료
                 break;
             }
+
             arr = new int[k];
-            set = new int[k];
+            seq = new int[6];
+            isUsed = new boolean[k];
             for (int i = 0; i < k; i++) {
-                set[i] = Integer.parseInt(st.nextToken());
+                arr[i] = Integer.parseInt(st.nextToken());
             }
 
-            func(0);
-            bw.write("\n");
+            makeComb(0, 0);
+            sb.append("\n");
         }
 
-        bw.flush();
-        bw.close();
+        System.out.println(sb);
     }
 
-    public static void func(int num) throws Exception {
-        if (num == 6) {
-            for (int i = 0; i < 6; i++) {
-                bw.write(arr[i] + " ");
+    static void makeComb(int cnt, int start) {
+        if (cnt == 6) {
+            for (int i : seq) {
+                sb.append(i + " ");
             }
-            bw.write("\n");
+            sb.append("\n");
 
             return;
         }
 
-        for (int i = 0; i < k; i++) {
-            if (!isUsed[set[i]]) {
-                if (num != 0 && arr[num - 1] > set[i]) {
-                    continue;
-                }
-                arr[num] = set[i];
-                isUsed[set[i]] = true;
-                func(num + 1);
-                isUsed[set[i]] = false;
+        for (int i = start; i < k; i++) {
+            if (isUsed[i]) {
+                continue;
             }
+            if (cnt != 0 && seq[cnt - 1] > arr[i]) {
+                continue;
+            }
+            isUsed[i] = true;
+            seq[cnt] = arr[i];
+            makeComb(cnt + 1, start + 1);
+            isUsed[i] = false;
         }
     }
 }
