@@ -1,58 +1,62 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.Arrays;
 import java.util.StringTokenizer;
 
 public class Main {
     /*
-    단순히 A,B를 그대로 비교하면 O(NM)으로 시간초과
-
-    O(NlogN)
+    O((N+M)logM)
      */
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-        StringBuilder sb = new StringBuilder();
         int t = Integer.parseInt(br.readLine());
-        for (int i = 0; i < t; i++) {
+        while (t-- > 0) {
             StringTokenizer st = new StringTokenizer(br.readLine());
             int n = Integer.parseInt(st.nextToken());
             int m = Integer.parseInt(st.nextToken());
-
-            ArrayList<int[]> list = new ArrayList<>();
+            int[] a = new int[n];
+            int[] b = new int[m];
 
             st = new StringTokenizer(br.readLine());
-            for (int j = 0; j < n; j++) {
-                list.add(new int[]{Integer.parseInt(st.nextToken()), 0});
+            for (int i = 0; i < n; i++) {
+                a[i] = Integer.parseInt(st.nextToken());
             }
+
             st = new StringTokenizer(br.readLine());
-            for (int j = 0; j < m; j++) {
-                list.add(new int[]{Integer.parseInt(st.nextToken()), 1});
+            for (int i = 0; i < m; i++) {
+                b[i] = Integer.parseInt(st.nextToken());
             }
 
-            Collections.sort(list, new Comparator<int[]>() {
-                @Override
-                public int compare(int[] o1, int[] o2) {
-                    return o1[0] - o2[0];
-                }
-            });
+            Arrays.sort(b);
 
-            int ans = 0; // 해당 테스트케이스 정답
-            int cnt = 0; // 현재까지 나온 b 갯수
-            for (int j = 0; j < n + m; j++) {
-                if (list.get(j)[1] == 0) { // a에 속한 수
-                    ans += cnt;
-                } else { // b에 속한 수
-                    cnt++;
-                }
+            int ans = 0;
+            for (int i = 0; i < n; i++) {
+                ans += binarySearch(b, a[i]);
             }
-            sb.append(ans).append('\n');
+
+            System.out.println(ans);
+        }
+    }
+
+    public static int binarySearch(int[] arr, int target) { // target보다 작은 수 중 가장 오른쪽 idx return
+        int left = 0;
+        int right = arr.length - 1;
+
+        int result = -1;
+        while (left <= right) {
+            int mid = (left + right) / 2;
+
+            if (arr[mid] < target) {
+                result = mid;
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
         }
 
-        System.out.println(sb);
+        return result + 1;
     }
 }
