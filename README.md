@@ -28,6 +28,8 @@
 4. The LinkedList implementation consumes more memory than the ArrayDeque
 -> Deque를 LinkedList 구현으로 사용하면 탐색 중 현재 원소를 삭제하는 데 있어서 효율적이다. 또한 ArrayDeque 구현으로 사용하면 양쪽 끝 원소의 삽입 및 삭제에 있어서 더 효율적이다.
 
+- BFS에서 유용하게 썼던 "현재 보는 칸으로부터 추가되는 인접한 칸은 거리가 현재 보는 칸보다 1만큼 더 떨어져있다"는 성질이 DFS에서는 성립하지 않으므로 다차원 배열을 탐색할 때 거리를 계산하는 경우엔 DFS를 사용할 수 없다.
+
 - 해시: HashMap
 - 이진 탐색 트리(RBT 적용): TreeMap
 - 최소 힙: PriorityQueue
