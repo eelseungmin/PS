@@ -1,43 +1,30 @@
-import java.io.*;
-import java.util.*;
-
-class Node {
-    int x, y;
-
-    public Node(int x, int y) {
-        this.x = x;
-        this.y = y;
-    }
-}
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
 
 public class Main {
     /*
-    1초, 256MB
+    두 덩어리로 분리되는지 여부 체크
+    1년마다 각 빙산마다 상하좌우 바다 칸 갯수 확인하고 그만큼 높이 감소시키기
 
-    빙산 높이 0에 접한 칸 갯수만큼 년마다 감소
-    두 덩어리 이상으로 분리되는 최초 시간, 다 녹을 때까지 분리 안되면 0 출력
-
-    빙산 녹이는 건 bfs가 아니라 그냥 함수 하나 짜서 진행 시키고
-    두 덩어리로 떨어졌는지를 판단하는 조건??
-    -> 아무 빙산이나 골라서 빙산인 칸 bfs 해서 빙산 갯수 센 다음에 전체 빙산 갯수와 같으면 아직 분리가 안된 것
-
+    O(NM)
      */
-    static int n, m, year;
+    static int n, m;
     static int[][] map;
-    static int[][] vis;
+    static boolean[][] vis;
     static int[] dx = {-1, 1, 0, 0};
     static int[] dy = {0, 0, -1, 1};
-    static Queue<Node> q = new LinkedList<>();
+    static int totalIce; // 빙산 총 갯수
+    static int teamIce; // 빙산 덩어리 갯수
 
-    public static void main(String[] args) throws Exception {
-        // write your code here
+    public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
         StringTokenizer st = new StringTokenizer(br.readLine());
         n = Integer.parseInt(st.nextToken());
         m = Integer.parseInt(st.nextToken());
         map = new int[n][m];
-        vis = new int[n][m];
-
         for (int i = 0; i < n; i++) {
             st = new StringTokenizer(br.readLine());
             for (int j = 0; j < m; j++) {
@@ -45,30 +32,28 @@ public class Main {
             }
         }
 
+        // 빙산 녹이기
+        int year = 0;
         while (true) {
             year++;
-            melting(); // 빙산 녹이기
-            vis = new int[n][m]; // 방문 배열 초기화
-            int status = status();// 빙산 상태 확인
+
+            meltIce();
+
+            int status = checkIce();
             if (status == 0) {
                 System.out.println(0);
                 return;
-            } else if (status == 2) {
+            } else if (status == 1) {
+                continue;
+            } else {
                 System.out.println(year);
                 return;
             }
-            vis = new int[n][m]; // 방문 배열 초기화
         }
     }
 
-    public static boolean check(int nx, int ny) { // 범위 안에 있는지 확인
-        if (nx >= 0 && nx < n && ny >= 0 && ny < m) {
-            return true;
-        }
-        return false;
-    }
-
-    public static void melting() {
+    static void meltIce() { // 빙산 녹이기
+        int[][] nearIce = new int[n][m]; // 녹일 높이를 기록할 배열
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
                 if (map[i][j] == 0) {
@@ -79,65 +64,64 @@ public class Main {
                     int nx = i + dx[k];
                     int ny = j + dy[k];
 
-                    if (check(nx, ny) && map[nx][ny] == 0) { // 주변의 0 갯수 구하기
-                        vis[i][j]++;
+                    if (nx < 0 || nx >= n || ny < 0 || ny >= m) {
+                        continue;
+                    }
+
+                    if (map[nx][ny] == 0) {
+                        nearIce[i][j]++;
                     }
                 }
             }
         }
 
-        // 0 갯수 만큼 빙산 녹이기
+        // 빙산을 한꺼번에 녹여야 주위 빙산 갯수를 계산할 때 지장이 없음
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
-                map[i][j] = Math.max(0, map[i][j] - vis[i][j]);
+                map[i][j] = Math.max(0, map[i][j] - nearIce[i][j]);
             }
         }
     }
 
-    // 0: 빙산이 다 녹음, 1: 빙산이 한 덩어리, 2: 두 덩어리 이상
-    public static int status() {
-        int exist = 0; // 빙산 갯수
-        int curx = -1;
-        int cury = -1;
+    static int checkIce() {
+        totalIce = 0;
+        teamIce = 0;
+        vis = new boolean[n][m]; // 방문 배열 초기화
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
-                if (map[i][j] > 0) {
-                    curx = i;
-                    cury = j;
-                    exist++;
+                if (!vis[i][j] && map[i][j] != 0) {
+                    dfs(i, j);
+                    teamIce++;
                 }
             }
         }
 
-        if (exist == 0) { // 다 녹음
+        if (teamIce >= 2) { // 빙산이 두 덩어리 이상으로 분리됨
+            return 2;
+        } else if (totalIce == 0 && teamIce < 2) { // 빙산이 다 녹았지만 분리되지 않음
             return 0;
-        }
-
-        // 빙산끼리 붙어있는지 확인
-        int exist2 = 0;
-        vis[curx][cury]++;
-        q.offer(new Node(curx, cury));
-        while (!q.isEmpty()) {
-            Node cur = q.poll();
-            exist2++;
-
-            for (int i = 0; i < 4; i++) {
-                int nx = cur.x + dx[i];
-                int ny = cur.y + dy[i];
-
-                // 범위 바깥, 방문 여부, 빙산 여부 필터링
-                if (!check(nx, ny) || vis[nx][ny] == 1 || map[nx][ny] == 0) {
-                    continue;
-                }
-
-                vis[nx][ny] = 1;
-                q.offer(new Node(nx, ny));
-            }
-        }
-
-        if (exist == exist2) { // 한 덩이
+        } else { // 빙산이 다 녹지 않았고 분리되지도 않음
             return 1;
         }
-        return 2; // 두 덩이 이상
+    }
+
+    static void dfs(int x, int y) {
+        if (x < 0 || x >= n || y < 0 || y >= m) {
+            return;
+        }
+
+        if (map[x][y] == 0 || vis[x][y]) {
+            return;
+        }
+
+        vis[x][y] = true;
+        totalIce++;
+
+        for (int i = 0; i < 4; i++) {
+            int nx = x + dx[i];
+            int ny = y + dy[i];
+
+            dfs(nx, ny);
+        }
     }
 }
