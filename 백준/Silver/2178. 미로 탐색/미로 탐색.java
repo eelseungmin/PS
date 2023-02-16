@@ -1,9 +1,13 @@
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.StringTokenizer;
 
 class Node {
-    int x;
-    int y;
+    int x, y;
 
     public Node(int x, int y) {
         this.x = x;
@@ -15,50 +19,39 @@ public class Main {
     /*
 
      */
-    static int[][] map;
-    static int[][] dist; // 시작 지점부터의 거리를 표현하지만 방문 여부도 나타낸다.
+    static int n, m;
+    static int[][] maze;
+    static int[][] dist;
     static int[] dx = {-1, 1, 0, 0};
     static int[] dy = {0, 0, -1, 1};
 
-    public static void main(String[] args) throws Exception {
-        // write your code here
+    public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine());
 
-        int n = Integer.parseInt(st.nextToken());
-        int m = Integer.parseInt(st.nextToken());
-        map = new int[n][m];
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        n = Integer.parseInt(st.nextToken());
+        m = Integer.parseInt(st.nextToken());
+        maze = new int[n][m];
         dist = new int[n][m];
-        // 2차원 배열 Arrays.fill로 -1 채우기
-        for (int i = 0; i < dist.length; i++) {
+        for (int i = 0; i < n; i++) {
             Arrays.fill(dist[i], -1);
         }
-
-        // 미로 입력받기
         for (int i = 0; i < n; i++) {
             String tmp = br.readLine();
             for (int j = 0; j < m; j++) {
-                map[i][j] = tmp.charAt(j) - '0'; // char to int
+                maze[i][j] = tmp.charAt(j) - '0';
             }
         }
 
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                if (dist[i][j] == -1 && map[i][j] == 1) {
-                    bfs(new Node(i, j));
-                }
-            }
-        }
+        bfs();
 
-        System.out.println(dist[n - 1][m - 1] + 1);
+        System.out.println(dist[n - 1][m - 1]);
     }
 
-    public static void bfs(Node node) {
-        if (dist[node.x][node.y] == -1) {
-            dist[node.x][node.y]++;
-        }
+    static void bfs() {
         Queue<Node> q = new LinkedList<>();
-        q.offer(node);
+        dist[0][0] = 1;
+        q.offer(new Node(0, 0));
 
         while (!q.isEmpty()) {
             Node cur = q.poll();
@@ -67,14 +60,16 @@ public class Main {
                 int nx = cur.x + dx[i];
                 int ny = cur.y + dy[i];
 
-                if (nx < 0 || nx >= map.length || ny < 0 || ny >= map[0].length) {
+                if (nx < 0 || nx >= n || ny < 0 || ny >= m) {
                     continue;
                 }
 
-                if (dist[nx][ny] == -1 && map[nx][ny] == 1) {
-                    dist[nx][ny] = dist[cur.x][cur.y] + 1;
-                    q.offer(new Node(nx, ny));
+                if (dist[nx][ny] != -1 || maze[nx][ny] != 1) {
+                    continue;
                 }
+
+                dist[nx][ny] = dist[cur.x][cur.y] + 1;
+                q.offer(new Node(nx, ny));
             }
         }
     }
