@@ -50,7 +50,7 @@ public class Main {
 
         int res = bfs();
 
-        if (res == - 1) {
+        if (res == -1) {
             System.out.println("Fail");
             return;
         } else {
@@ -95,11 +95,11 @@ public class Main {
                 } else { // 그람이 없을 때
                     if (dist[nx][ny][0] == -1) {
                         if (castle[nx][ny] == 0) { // 빈 공간 이동
-                           dist[nx][ny][0] = dist[cur.x][cur.y][0] + 1;
-                           q.offer(new Node(nx, ny,false));
+                            dist[nx][ny][0] = dist[cur.x][cur.y][0] + 1;
+                            q.offer(new Node(nx, ny, false));
                         } else if (castle[nx][ny] == 2) { // 그람 발견
                             dist[nx][ny][1] = dist[cur.x][cur.y][0] + 1;
-                            q.offer(new Node(nx, ny,true));
+                            q.offer(new Node(nx, ny, true));
                         }
                     }
                 }
