@@ -1,57 +1,57 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.Arrays;
 import java.util.StringTokenizer;
 
 public class Main {
     /*
-    절댓값 기준으로 정렬을 하면
-    예를 들어 2와 -2가 붙어서 정렬이 된다.
-    앞에서부터 2개씩 합쳐서 0과 가장 가까운 용액을 찾는다.
-
+    먼저 정렬한다.
+    양쪽 끝에 투 포인터를 설정한다.
+    다 양수일 경우
+    다 음수일 경우
+    음수 양수일 경우
     O(NlogN)
      */
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
         int n = Integer.parseInt(br.readLine());
         StringTokenizer st = new StringTokenizer(br.readLine());
-
-        ArrayList<Integer> list = new ArrayList<>();
+        int[] arr = new int[n];
         for (int i = 0; i < n; i++) {
-            int tmp = Integer.parseInt(st.nextToken());
-
-            list.add(tmp);
+            arr[i] = Integer.parseInt(st.nextToken());
         }
 
-        Collections.sort(list, new Comparator<Integer>() {
-            @Override
-            public int compare(Integer o1, Integer o2) {
-                return Math.abs(o1) - Math.abs(o2);
+        Arrays.sort(arr);
+
+        int l = 0;
+        int r = n - 1;
+        int sum; // 합
+        int min = Integer.MAX_VALUE; // 합의 최솟값(절댓값)
+        int[] ans = new int[2];
+        while (l < r) {
+            sum = arr[l] + arr[r];
+            if (sum == 0) {
+                ans[0] = arr[l];
+                ans[1] = arr[r];
+                break;
             }
-        });
+            if (min > Math.abs(sum)) {
+                min = Math.abs(sum);
+                ans[0] = arr[l];
+                ans[1] = arr[r];
+            }
 
-        int min = Integer.MAX_VALUE;
-        int idx = -1;
-        for (int i = 0; i < n - 1; i++) {
-            int sum = Math.abs(list.get(i) + list.get(i + 1));
-
-            if (sum < min) {
-                min = sum;
-                idx = i;
+            if (sum > 0) {
+                r--;
+            } else {
+                l++;
             }
         }
 
-        StringBuilder sb = new StringBuilder();
-        if (list.get(idx) < list.get(idx + 1)) {
-            sb.append(list.get(idx) + " " + list.get(idx + 1));
-        } else {
-            sb.append(list.get(idx + 1) + " " + list.get(idx));
-        }
-
-        System.out.println(sb);
+        Arrays.sort(ans);
+        System.out.println(ans[0] + " " + ans[1]);
     }
 }
