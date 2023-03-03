@@ -5,7 +5,7 @@ import java.util.StringTokenizer;
 
 public class Main {
     /*
-
+    O(N)
      */
 
     public static void main(String[] args) throws IOException {
@@ -21,27 +21,20 @@ public class Main {
             arr[i] = Integer.parseInt(st.nextToken());
         }
 
-        int r = 0;
-        int len = 1; // 현재 부분 수열의 길이
-        int maxLen = 1; // 최장 연속 부분 수열의 길이
-        vis[arr[0]]++;
+        int r = -1;
+        int ans = 0; // 정답
         for (int l = 0; l < n; l++) {
-            while (r < n - 1 && vis[arr[r]] <= k) {
+            // 다음에 r이 이동할 위치의 숫자가 k개 미만으로 등장했는지 확인하고 r을 옮긴다.
+            while (r + 1 < n && vis[arr[r + 1]] < k) {
                 r++;
                 vis[arr[r]]++;
-                len++;
             }
 
-            if (vis[arr[r]] > k) {
-                maxLen = Math.max(maxLen, len - 1);
-            } else {
-                maxLen = Math.max(maxLen, len);
-            }
+            ans = Math.max(ans, r - l + 1);
 
             vis[arr[l]]--;
-            len--;
         }
 
-        System.out.println(maxLen);
+        System.out.println(ans);
     }
 }
