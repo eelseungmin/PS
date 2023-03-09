@@ -14,22 +14,26 @@ public class Main {
         StringTokenizer st = new StringTokenizer(br.readLine());
         int n = Integer.parseInt(st.nextToken());
         int m = Integer.parseInt(st.nextToken());
-        int[] arr = new int[n];
         st = new StringTokenizer(br.readLine());
+        int[] arr = new int[n];
         for (int i = 0; i < n; i++) {
             arr[i] = Integer.parseInt(st.nextToken());
         }
 
-        int cnt = 0;
         int sum = 0;
-        for (int i = 0; i < n; i++) {
-            for (int j = i; j < n; j++) {
-                sum += arr[j];
-                if (sum == m) {
-                    cnt++;
-                }
+        int r = -1;
+        int cnt = 0;
+        for (int l = 0; l < n; l++) {
+            while (r < n - 1 && sum < m) {
+                r++;
+                sum += arr[r];
             }
-            sum = 0;
+
+            if (sum == m) {
+                cnt++;
+            }
+
+            sum -= arr[l];
         }
 
         System.out.println(cnt);
