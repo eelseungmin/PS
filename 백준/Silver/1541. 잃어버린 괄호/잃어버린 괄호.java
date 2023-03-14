@@ -7,6 +7,7 @@ import java.util.StringTokenizer;
 
 public class Main {
     /*
+    작은 수를 만들려면 최대한 큰 수를 만들어서 빼야 한다.
     - 기준으로 문자열을 분리한 뒤 분리된 문자열에 포함된 + 연산을 모두 수행
     분리된 연산들의 값을 가지고 차례대로 - 연산을 수행한다.
 
@@ -33,7 +34,7 @@ public class Main {
             q.offer(sum);
         }
 
-        int res = q.poll();; // 정답
+        int res = q.poll(); // 정답
         while (!q.isEmpty()) {
             res -= q.poll();
         }
