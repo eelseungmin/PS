@@ -22,7 +22,7 @@ public class Main {
             price[i] = Integer.parseInt(st.nextToken());
         }
 
-        int sum = 0;
+        long sum = 0;
         for (int i = 0; i < n - 1; i++) {
             if (price[i] < price[i + 1]) {
                 sum += price[i] * (road[i] + road[i + 1]);
