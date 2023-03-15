@@ -8,26 +8,17 @@ import java.util.StringTokenizer;
 public class Main {
     /*
     매번 현재 시점에서 피어있는 꽃 중에서 가장 마지막에 지는 꽃을 선택
-    피는 날짜를 기준으로 오름차순 정렬, 지는 날짜 기준으로는 내림차순 정렬
     m * 100 + d
     날짜를 위와 같이 표현하는 게 효율적
 
     close가 1201 이상인 꽃이 마지막 꽃(문제 조건 참조)
      */
-    static class Flower implements Comparable<Flower> {
+    static class Flower {
         int open, close;
 
         Flower(int open, int close) {
             this.open = open;
             this.close = close;
-        }
-
-        @Override
-        public int compareTo(Flower f) {
-            if (this.open == f.open) {
-                return f.close - this.close;
-            }
-            return this.open - f.open;
         }
     }
 
@@ -44,8 +35,6 @@ public class Main {
             int cd = Integer.parseInt(st.nextToken());
             list.add(new Flower(om * 100 + od, cm * 100 + cd));
         }
-
-        Collections.sort(list); // 기준에 맞게 정렬
 
         int cur = 301; // 현재 시간
         int ans = 0; // 정답
