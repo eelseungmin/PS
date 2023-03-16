@@ -1,49 +1,30 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.Queue;
 
 public class Main {
     /*
-
+    dp[n] = min(dp[n/3] + 1, dp[n/2] + 1, dp[n-1] + 1)
      */
-    static int n;
-    static int[] dist;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-        n = Integer.parseInt(br.readLine());
-        dist = new int[n + 1];
-        Arrays.fill(dist, -1);
+        int n = Integer.parseInt(br.readLine());
+        
+        int[] dp = new int[n + 1];
+        dp[1] = 0;
 
-        bfs();
-
-        System.out.println(dist[n]);
-    }
-
-    static void bfs() {
-        Queue<Integer> q = new LinkedList<>();
-        q.offer(1);
-        dist[1]++;
-
-        while (!q.isEmpty()) {
-            int cur = q.poll();
-
-            for (int res : new int[]{cur * 3, cur * 2, cur + 1}) {
-                if (res > n) {
-                    continue;
-                }
-
-                if (dist[res] != -1) {
-                    continue;
-                }
-
-                dist[res] = dist[cur] + 1;
-                q.offer(res);
+        for (int i = 2; i <= n; i++) {
+            dp[i] = dp[i - 1] + 1;
+            if (i % 2 == 0) {
+                dp[i] = Math.min(dp[i], dp[i / 2] + 1);
+            }
+            if (i % 3 == 0) {
+                dp[i] = Math.min(dp[i], dp[i / 3] + 1);
             }
         }
+
+        System.out.println(dp[n]);
     }
 }
