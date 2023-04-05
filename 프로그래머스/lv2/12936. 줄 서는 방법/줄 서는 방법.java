@@ -23,7 +23,6 @@ class Solution {
             num.remove(idx);
             K = K % factorial[N - 1];
             N--;
-            
         }
         
         return ans;
