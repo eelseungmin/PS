@@ -7,29 +7,16 @@ class Solution
         Stack<Character> stack = new Stack<>();
         
         for (char ch : s.toCharArray()) {
-            if (stack.isEmpty()) {
-                stack.push(ch);
-            } else {
-                if (stack.peek() == ch) {
-                    stack.pop();
-                } else {
-                    stack.push(ch);
-                }
-            }
-        }
-        
-        while (!stack.isEmpty()) {
-            char tmp = stack.pop();
-            
-            if (stack.isEmpty()) {
-                return 0;
-            } else if (tmp == stack.peek()) {
+            if (!stack.isEmpty() && stack.peek() == ch) {
                 stack.pop();
             } else {
-                return 0;
+                stack.push(ch);
             }
         }
         
-        return 1;
+        if (stack.isEmpty()) {
+            return 1;
+        }
+        return 0;
     }
 }
