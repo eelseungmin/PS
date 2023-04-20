@@ -15,7 +15,7 @@ class Solution {
             answer++; // 시간 경과
             
             if (!bridge.isEmpty()) { // 다리에 트럭이 있을 경우
-                if (answer - bridge.peek().start >= bridge_length) {
+                if (answer - bridge.peek().start == bridge_length) {
                     bw -= bridge.peek().weight;
                     exit.offer(bridge.poll()); // 조건을 만족하면 다리에서 내보내기
                 }
