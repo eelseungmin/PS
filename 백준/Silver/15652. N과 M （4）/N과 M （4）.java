@@ -1,39 +1,42 @@
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
 public class Main {
-    static int[] arr = new int[9];
-    static int n, m;
-    static StringBuilder sb = new StringBuilder();
+    /*
 
-    public static void main(String[] args) throws Exception {
-        // write your code here
+     */
+    static int n, m;
+    static int[] seq;
+    static StringBuilder sb;
+
+    public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
-
         n = Integer.parseInt(st.nextToken());
         m = Integer.parseInt(st.nextToken());
+        seq = new int[m];
+        sb = new StringBuilder();
 
-        func(1);
+        makeSeq(0, 1);
 
         System.out.println(sb);
     }
 
-    public static void func(int k) { // k번째 수를 선택
-        if (k == m + 1) {
-            for (int i = 1; i < m + 1; i++) {
-                sb.append(arr[i]).append(" ");
+    static void makeSeq(int cnt, int start) {
+        if (cnt == m) {
+            for (int i = 0; i < m; i++) {
+                sb.append(seq[i] + " ");
             }
             sb.append("\n");
+
             return;
         }
 
-        for (int i = 1; i < n + 1; i++) {
-            if (arr[k - 1] <= i) {
-                arr[k] = i;
-                func(k + 1);
-            }
+        for (int i = start; i <= n; i++) {
+            seq[cnt] = i;
+            makeSeq(cnt + 1, i);
         }
     }
 }
