@@ -1,52 +1,52 @@
 import java.util.*;
 
 class Solution {
-    static int curPirodo; // 현재 피로도
-    static int max; // 정답
-    static int totalVis; // 현재 방문한 던전 개수
-    static int trueVis; // 현재 탐험한 던전 개수
+    static int max;
     static int[][] dun;
-    static boolean[] isUsed;
+    static int[] permu;
+    static boolean[] vis;
+    static int ans;
     
     public int solution(int k, int[][] dungeons) {
-        curPirodo = k;
-        max = 0;
-        totalVis = 0;
-        trueVis = 0;
+        /**
+        순열을 이용해서 던전 탐색을 진행하며 최댓값 갱신
+        **/
+        max = dungeons.length;
         dun = dungeons;
-        isUsed = new boolean[8];
+        permu = new int[dungeons.length];
+        vis = new boolean[dungeons.length];
         
-        func();
+        choose(0, k);
         
-        return max;
+        return ans;
     }
     
-    public static void func() {
-        if (totalVis == 8) {
+    public void choose(int idx, int k) {
+        if (idx == max) {
+            simulation(k);
             return;
-        }
+        } 
         
-        for (int i = 0; i < dun.length; i++) {
-            if (!isUsed[i]) {
-                boolean flag = false;
-                isUsed[i] = true;
-                totalVis++;
-                if (dun[i][0] <= curPirodo && curPirodo - dun[i][1] >= 0) {
-                    flag = true;
-                    curPirodo -= dun[i][1];
-                    trueVis++;
-                    max = Math.max(max, trueVis);
-                }
-            
-                func();
-            
-                isUsed[i] = false;
-                totalVis--;
-                if (flag) {
-                    curPirodo += dun[i][1];
-                    trueVis--;
-                }
+        for (int i = 0; i < permu.length; i++) {
+            if (!vis[i]) {
+                vis[i] = true;
+                permu[idx] = i;
+                choose(idx + 1, k);
+                vis[i] = false;
             }
+        }
+    }
+    
+    public void simulation(int k) {
+        int num = 0;
+        
+        for (int i = 0; i < permu.length; i++) {
+            if (k < dun[permu[i]][0]) {
+                return;
+            }
+            
+            k -= dun[permu[i]][1];
+            ans = Math.max(ans, ++num);
         }
     }
 }
