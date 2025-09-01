@@ -1,34 +1,43 @@
 import java.util.*;
 
 class Solution {
-    char[] chs = {'A', 'E', 'I', 'O', 'U'};
-    List<String> list = new ArrayList<>();
+    static char[] aeiou = {'A', 'E', 'I', 'O', 'U'};
+    static int[] permu;
+    static int max;
+    static List<String> dict;
     
     public int solution(String word) {
-        for (int i = 0; i < chs.length; i++) {
-            dfs(word, chs[i] + "");
+        /**
+        중복순열로 해결
+        **/
+        permu = new int[aeiou.length];
+        dict = new ArrayList<>();
+    
+        for (int i = 1; i <= aeiou.length; i++) {
+            max = i;
+            choose(0);
+        }
+        Collections.sort(dict);
+        for (int j = 0; j < dict.size(); j++) {
+            if (dict.get(j).equals(word)) return j + 1;
         }
         
-        for (int i = 0; i < list.size(); i++) {
-            if (list.get(i).equals(word)) {
-                return i + 1;
-            }
-        }
-        
-        return 0;
+        return -1;
     }
     
-    public void dfs(String word, String cur) {
-        if (cur.length() > 5) {
+    public void choose(int idx) {
+        if (idx == max) {
+            String newWord = "";
+            for (int i = 0; i < max; i++) {
+                newWord += aeiou[permu[i]] + "";
+            }
+            dict.add(newWord);
             return;
         }
         
-        if (!list.contains(cur)) {
-            list.add(cur);
-        }
-        
-        for (int i = 0; i < chs.length; i++) {
-            dfs(word, cur + chs[i]);
+        for (int i = 0; i < aeiou.length; i++) {
+            permu[idx] = i;
+            choose(idx + 1);
         }
     }
 }
